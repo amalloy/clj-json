@@ -24,7 +24,7 @@
   [obj]
   (let [sw        (StringWriter.)
         generator (.createJsonGenerator factory sw)]
-    (JsonExt/generate generator (coerce obj))
+    (JsonExt/generate generator *coercions* obj)
     (.flush generator)
     (.toString sw)))
 

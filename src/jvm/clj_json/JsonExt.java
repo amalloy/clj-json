@@ -31,7 +31,7 @@ public class JsonExt {
         public void generate(Object obj) throws Exception{
             if (coercions != null) {
                 IFn fn;
-                while ((IFn) fn = coercions.get(obj.class)){
+                while ((fn = (IFn)coercions.get(obj.getClass())) != null){
                     obj = fn.invoke(obj);
                 }
             }
@@ -74,7 +74,7 @@ public class JsonExt {
                     } else {
                         jg.writeFieldName((String) key);
                     }
-                    generate(jg, me.val());
+                    generate(me.val());
                     mSeq = mSeq.next();
                 }
                 jg.writeEndObject();
@@ -82,14 +82,14 @@ public class JsonExt {
                 IPersistentVector vec = (IPersistentVector) obj;
                 jg.writeStartArray();
                 for (int i = 0; i < vec.count(); i++) {
-                    generate(jg, vec.nth(i));
+                    generate(vec.nth(i));
                 }
                 jg.writeEndArray();
             } else if ((obj instanceof ISeq) || (obj instanceof IPersistentList)) {
                 ISeq lSeq = ((Seqable) obj).seq();
                 jg.writeStartArray();
                 while (lSeq != null) {
-                    generate(jg, lSeq.first());
+                    generate(lSeq.first());
                     lSeq = lSeq.next();
                 }
                 jg.writeEndArray();
@@ -102,7 +102,7 @@ public class JsonExt {
 
     public static void generate(JsonGenerator jg, Map coercions, Object obj) throws Exception {
         Generator g = new Generator(jg, coercions);
-        return g.generate(obj);
+        g.generate(obj);
     }
 
     public static Object parse(JsonParser jp, boolean first, boolean keywords, Object eofValue) throws Exception {
